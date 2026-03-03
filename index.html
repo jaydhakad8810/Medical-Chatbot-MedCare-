@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="MedCare AI – Your smart medical and mental wellness assistant. Get general health guidance, symptom checking, and emotional support." />
+    <meta name="keywords"
+        content="medical chatbot, AI health assistant, symptom checker, mental wellness, MedCare AI" />
+    <title>MedCare AI – Smart Medical & Wellness Assistant</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════════════
+       PROFILE SETUP MODAL
+  ══════════════════════════════════════════ -->
+    <div id="profile-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-card">
+            <div class="modal-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="24" r="24" fill="url(#modalGrad)" />
+                    <path
+                        d="M24 13C20.134 13 17 16.134 17 20C17 23.866 20.134 27 24 27C27.866 27 31 23.866 31 20C31 16.134 27.866 13 24 13Z"
+                        fill="white" />
+                    <path d="M12 37C12 31.477 17.373 27 24 27C30.627 27 36 31.477 36 37" stroke="white"
+                        stroke-width="2.5" stroke-linecap="round" />
+                    <defs>
+                        <linearGradient id="modalGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#4A90D9" />
+                            <stop offset="1" stop-color="#357abd" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h2 id="modal-title">Welcome to MedCare AI</h2>
+            <p class="modal-subtitle">Help us personalize your experience</p>
+
+            <form id="profile-form" novalidate>
+                <div class="form-group">
+                    <label for="user-name">Your Name <span class="required">*</span></label>
+                    <input type="text" id="user-name" placeholder="e.g. Alex Johnson" required autocomplete="name" />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="user-age">Age <span class="required">*</span></label>
+                        <input type="number" id="user-age" placeholder="e.g. 28" min="1" max="120" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="user-gender">Gender <span class="required">*</span></label>
+                        <select id="user-gender" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="non-binary">Non-binary</option>
+                            <option value="prefer-not-to-say">Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="user-history">Medical History <span class="optional">(optional)</span></label>
+                    <textarea id="user-history" placeholder="e.g. Diabetes, hypertension, allergies..."
+                        rows="2"></textarea>
+                </div>
+                <button type="submit" id="start-btn" class="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                    Start Chat
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+       EMERGENCY ALERT BANNER
+  ══════════════════════════════════════════ -->
+    <div id="emergency-alert" class="emergency-banner hidden" role="alert" aria-live="assertive">
+        <div class="emergency-inner">
+            <span class="emergency-icon">🚨</span>
+            <div class="emergency-text">
+                <strong>Emergency Detected!</strong>
+                <p>This sounds serious. Please call emergency services immediately.</p>
+            </div>
+            <a href="tel:112" class="emergency-call-btn" id="emergency-call-btn">📞 Call 112</a>
+            <button class="emergency-close" id="emergency-close-btn" aria-label="Dismiss emergency alert">✕</button>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+       MAIN APP WRAPPER
+  ══════════════════════════════════════════ -->
+    <div class="app-wrapper">
+
+        <!-- ANIMATED BACKGROUND BLOB -->
+        <div class="bg-blob blob-1" aria-hidden="true"></div>
+        <div class="bg-blob blob-2" aria-hidden="true"></div>
+
+        <!-- ─── HEADER ─── -->
+        <header class="app-header" role="banner">
+            <div class="header-left">
+                <!-- Logo SVG -->
+                <div class="logo-wrap" aria-label="MedCare AI Logo">
+                    <svg class="logo-svg" width="38" height="38" viewBox="0 0 38 38" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <rect width="38" height="38" rx="11" fill="url(#logoGrad)" />
+                        <!-- Cross/Plus -->
+                        <rect x="16" y="8" width="6" height="22" rx="3" fill="white" opacity="0.95" />
+                        <rect x="8" y="16" width="22" height="6" rx="3" fill="white" opacity="0.95" />
+                        <!-- Heartbeat line accent -->
+                        <path d="M6 29 L10 29 L12 25 L14 33 L16 29 L32 29" stroke="white" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" opacity="0.6" />
+                        <defs>
+                            <linearGradient id="logoGrad" x1="0" y1="0" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#4A90D9" />
+                                <stop offset="1" stop-color="#2eb87e" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="logo-text">
+                        <span class="logo-name">MedCare AI</span>
+                        <span class="logo-tagline">Smart Wellness Assistant</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <!-- User profile pill -->
+                <div class="user-pill" id="user-pill" title="Your Profile">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    <span id="header-username">Guest</span>
+                </div>
+                <!-- Clear chat -->
+                <button class="icon-btn" id="clear-chat-btn" title="Clear Chat History" aria-label="Clear chat history">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                        <path d="M10 11v6M14 11v6" />
+                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                    </svg>
+                </button>
+                <!-- Dark mode toggle -->
+                <button class="icon-btn theme-toggle" id="theme-toggle-btn" title="Toggle Dark Mode"
+                    aria-label="Toggle dark mode">
+                    <span class="theme-icon-light" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5" />
+                            <line x1="12" y1="1" x2="12" y2="3" />
+                            <line x1="12" y1="21" x2="12" y2="23" />
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                            <line x1="1" y1="12" x2="3" y2="12" />
+                            <line x1="21" y1="12" x2="23" y2="12" />
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                        </svg>
+                    </span>
+                    <span class="theme-icon-dark" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </header>
+
+        <!-- ─── CHAT CONTAINER ─── -->
+        <main class="chat-container" id="chat-container" role="main">
+
+            <!-- WELCOME SCREEN -->
+            <div class="welcome-screen" id="welcome-screen">
+                <div class="welcome-avatar" aria-hidden="true">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="32" cy="32" r="32" fill="url(#avatarGrad)" />
+                        <!-- Doctor coat -->
+                        <ellipse cx="32" cy="52" rx="16" ry="10" fill="white" opacity="0.95" />
+                        <!-- Head -->
+                        <circle cx="32" cy="26" r="11" fill="#fde8d0" />
+                        <!-- Hair -->
+                        <path d="M21 24 Q32 14 43 24" fill="#5a4a3a" />
+                        <!-- Stethoscope -->
+                        <path d="M26 38 Q24 44 28 46 Q32 47 36 44 Q40 42 38 38" stroke="#4A90D9" stroke-width="2"
+                            fill="none" stroke-linecap="round" />
+                        <circle cx="27" cy="38" r="2" fill="#4A90D9" />
+                        <!-- Cross on coat -->
+                        <rect x="30" y="45" width="4" height="10" rx="2" fill="#e8f4fd" />
+                        <rect x="27" y="48" width="10" height="4" rx="2" fill="#e8f4fd" />
+                        <defs>
+                            <linearGradient id="avatarGrad" x1="0" y1="0" x2="64" y2="64"
+                                gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#e8f4fd" />
+                                <stop offset="1" stop-color="#d4edda" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="avatar-pulse" aria-hidden="true"></div>
+                </div>
+
+                <h1 class="welcome-title">How can I assist you today?</h1>
+                <p class="welcome-subtitle">I'm your AI health companion — here to help with symptoms, wellness, and
+                    support.</p>
+
+                <!-- Quick action buttons -->
+                <div class="quick-actions" role="navigation" aria-label="Quick action shortcuts">
+                    <button class="quick-btn" id="qa-symptoms" data-message="I'd like to check my symptoms"
+                        aria-label="Check your symptoms">
+                        <span class="qa-icon">🩺</span>
+                        <span class="qa-label">Check Symptoms</span>
+                        <span class="qa-desc">Analyze what you're feeling</span>
+                    </button>
+                    <button class="quick-btn" id="qa-wellness" data-message="I need mental wellness support"
+                        aria-label="Mental wellness support">
+                        <span class="qa-icon">🧠</span>
+                        <span class="qa-label">Mental Wellness</span>
+                        <span class="qa-desc">Emotional & CBT support</span>
+                    </button>
+                    <button class="quick-btn" id="qa-medication" data-message="I have questions about medication"
+                        aria-label="Medication information">
+                        <span class="qa-icon">💊</span>
+                        <span class="qa-label">Medication Info</span>
+                        <span class="qa-desc">General drug information</span>
+                    </button>
+                    <button class="quick-btn" id="qa-emergency" data-message="This is an emergency situation"
+                        aria-label="Emergency help">
+                        <span class="qa-icon">🚨</span>
+                        <span class="qa-label">Emergency Help</span>
+                        <span class="qa-desc">Urgent care guidance</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- MESSAGES LIST -->
+            <div class="messages-list" id="messages-list" role="log" aria-live="polite" aria-label="Chat conversation">
+            </div>
+
+        </main>
+
+        <!-- ─── MOOD SELECTOR (Mental Wellness) ─── -->
+        <div class="mood-bar" id="mood-bar" role="group" aria-label="Select your current mood">
+            <span class="mood-label">How are you feeling?</span>
+            <div class="mood-buttons">
+                <button class="mood-btn" data-mood="happy" aria-label="I'm feeling happy">😊 Happy</button>
+                <button class="mood-btn" data-mood="sad" aria-label="I'm feeling sad">😢 Sad</button>
+                <button class="mood-btn" data-mood="anxious" aria-label="I'm feeling anxious">😰 Anxious</button>
+                <button class="mood-btn" data-mood="angry" aria-label="I'm feeling angry">😤 Angry</button>
+                <button class="mood-btn" data-mood="overwhelmed" aria-label="I'm feeling overwhelmed">😵
+                    Overwhelmed</button>
+            </div>
+        </div>
+
+        <!-- ─── INPUT BAR ─── -->
+        <footer class="input-area" role="contentinfo">
+            <div class="input-bar">
+                <button class="attach-btn icon-btn" id="wellness-toggle-btn" title="Toggle mood selector"
+                    aria-label="Toggle mood selector" aria-expanded="false">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                        <line x1="9" y1="9" x2="9.01" y2="9" />
+                        <line x1="15" y1="9" x2="15.01" y2="9" />
+                    </svg>
+                </button>
+                <textarea id="user-input" class="chat-input"
+                    placeholder="Describe your symptoms or ask a health question..." rows="1" maxlength="1000"
+                    aria-label="Type your health question" autocomplete="off"></textarea>
+                <button class="send-btn" id="send-btn" aria-label="Send message" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13" />
+                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- DISCLAIMER -->
+            <p class="disclaimer" role="doc-disclaimer">
+                ⚕️ MedCare AI provides general health information and emotional support. It is <strong>not a
+                    substitute</strong> for professional medical advice, diagnosis, or treatment.
+            </p>
+        </footer>
+
+    </div><!-- end .app-wrapper -->
+
+    <script src="script.js"></script>
+</body>
+
+</html>
